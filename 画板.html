@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./h1.css">
+    <script src="./h.js"></script>
+   <script src="http://at.alicdn.com/t/font_1167678_c20ihw0094j.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="actions"  class="actions">
+        <svg id="huabi"  class="icon" aria-hidden="true">
+            <use xlink:href="#icon-huabi"></use>
+        </svg>
+        <svg id="xiangpica"  class="icon" aria-hidden="true">
+            <use xlink:href="#icon-xiangpica"></use>
+        </svg>
+        <svg id="baocun" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-baocun"></use>
+        </svg>
+        <svg id="shanchu" class="icon" aria-hidden="true">
+            <use xlink:href="#icon-shanchu"></use>
+        </svg>
+</div>
+<div class="colors">
+    <ol>
+        <li id="red" class="red active"></li>
+        <li id="green" class="green"></li>
+        <li id="yellow" class="yellow"></li>
+        <li id="orange" class="orange"></li>
+        <li id="blue" class="blue"></li>
+        <li id="purple" class="purple"></li>
+    </ol>
+</div>
+<div class="sizes">
+    <ol>
+        <li id="thin" class="thin"></li>
+        <li id="thick" class="thick"></li>
+    </ol>
+</div>
+    <script>
+        var Canvas=document.getElementById('canvas');
+        var ctx=Canvas.getContext('2d');
+        var lineWidth=5;
+
+        autoSetCanvasSize(Canvas)
+//*********
+        listenToUser(Canvas)
+//*********
+
+        var eraserEnabled=false;
+        huabi.onclick=function(){
+            eraserEnabled=false
+            huabi.classList.add('active')
+            xiangpica.classList.remove('active')
+        }
+        xiangpica.onclick=function(){
+            eraserEnabled=true
+            xiangpica.classList.add('active')
+            huabi.classList.remove('active')
+        }
+        red.onclick=function(){
+            ctx.fillStyle='red'
+            ctx.strokeStyle='red'
+            red.classList.add('active')
+            green.classList.remove('active')
+            yellow.classList.remove('active')
+            orange.classList.remove('active')
+            blue.classList.remove('active')
+            purple.classList.remove('active')
+        }
+        green.onclick=function(){
+            ctx.fillStyle='green'
+            ctx.strokeStyle='green'
+            green.classList.add('active')
+            red.classList.remove('active')
+            yellow.classList.remove('active')
+            orange.classList.remove('active')
+            blue.classList.remove('active')
+            purple.classList.remove('active')
+        }
+        yellow.onclick=function(){
+            ctx.fillStyle='yellow'
+            ctx.strokeStyle='yellow'
+            yellow.classList.add('active')
+            green.classList.remove('active')
+            red.classList.remove('active')
+            orange.classList.remove('active')
+            blue.classList.remove('active')
+            purple.classList.remove('active')
+        }
+        orange.onclick=function(){
+            ctx.fillStyle='orange'
+            ctx.strokeStyle='orange'
+            orange.classList.add('active')
+            green.classList.remove('active')
+            yellow.classList.remove('active')
+            red.classList.remove('active')
+            blue.classList.remove('active')
+            purple.classList.remove('active')
+        }
+        blue.onclick=function(){
+            ctx.fillStyle='blue'
+            ctx.strokeStyle='blue'
+            blue.classList.add('active')
+            green.classList.remove('active')
+            yellow.classList.remove('active')
+            orange.classList.remove('active')
+            red.classList.remove('active')
+            purple.classList.remove('active')
+        }
+        purple.onclick=function(){
+            ctx.fillStyle='purple'
+            ctx.strokeStyle='purple'
+            purple.classList.add('active')
+            green.classList.remove('active')
+            yellow.classList.remove('active')
+            orange.classList.remove('active')
+            blue.classList.remove('active')
+            red.classList.remove('active')
+        }
+
+        // eraser.onclick=function (){
+        //     eraserEnabled = true 
+        //     actions.className="actions x"
+        // }
+        // brush.onclick=function (){
+        //     eraserEnabled = true
+        //     actions.className="actions"
+        // }
+            thin.onclick=function(){
+                lineWidth=5
+            }
+            thick.onclick=function(){
+                lineWidth=10
+            }
+            shanchu.onclick=function(){
+                ctx.clearRect(0,0,Canvas.width,Canvas.height)
+            }
+            baocun.onclick=function(){
+                var url=Canvas.toDataURL("image/png")
+                var a=document.createElement('a')
+                document.body.appendChild(a)
+                a.target='_blank'
+                a.download='我的画儿'
+                a.href=url
+                a.click()
+            }
+
+        
+            function autoSetCanvasSize(Canvas){
+                        setCanvasSize();
+                        window.onresize=function(){
+                        setCanvasSize()
+                            }
+            function setCanvasSize(){
+                        var pageWidth=document.documentElement.clientWidth;
+                        var pageHeight=document.documentElement.clientHeight;
+                        Canvas.width=pageWidth;
+                        Canvas.height=pageHeight;
+                    }
+                }
+            function drawLine(x1,y1,x2,y2){
+                        ctx.beginPath()
+                        ctx.moveTo(x1,y1)
+                        ctx.lineWidth=lineWidth
+                        ctx.lineTo(x2,y2)
+                        ctx.stroke()
+                        ctx.closePath()
+                    }
+            function drawCircle(x,y,radius){
+                        ctx.beginPath()
+                        ctx.arc(x,y,radius,0,Math.PI*2)
+                        ctx.fill()
+                    } 
+            function listenToUser(Canvas){
+                       
+                        var using=false
+                        var lastPoint={x:undefined,y:undefined}
+
+                        //特性检测
+                        if(document.body.ontouchstart!==undefined){
+                            canvas.ontouchstart=function(a){
+                                var x=a.touches[0].clientX
+                                var y=a.touches[0].clientY
+                            // drawCircle(x,y,1)
+                                using=true
+                            if(eraserEnabled){
+                                ctx.clearRect(x-5,y-5,10,10)
+                            }else{
+                                lastPoint={"x":x,"y":y}
+                            }
+                         }
+                            canvas.ontouchmove=function(a){
+                                var x=a.touches[0].clientX
+                                var y=a.touches[0].clientY        
+                              if(!using){return}
+                        if(eraserEnabled){ 
+                                ctx.clearRect(x-5,y-5,10,10)
+                              }else{
+                                var newPoint={"x":x,"y":y}
+                                //drawCircle(x,y,1)
+                                drawLine(lastPoint.x,lastPoint.y,newPoint.x,newPoint.y)
+                                lastPoint=newPoint 
+                            }
+                        }
+                            canvas.ontouchend=function(a){
+                                using=false
+                        }
+                    }else{
+                        canvas.onmousedown=function(a){
+                                var x=a.clientX
+                                var y=a.clientY
+                            // drawCircle(x,y,1)
+                                using=true
+                            if(eraserEnabled){
+                                ctx.clearRect(x-5,y-5,10,10)
+                            }else{
+                                lastPoint={"x":x,"y":y}
+                            }
+                        }
+                        canvas.onmousemove=function(a){
+                                var x=a.clientX
+                                var y=a.clientY        
+                              if(!using){return}
+                        if(eraserEnabled){ 
+                                ctx.clearRect(x-5,y-5,10,10)
+                              }else{
+                                var newPoint={"x":x,"y":y}
+                                //drawCircle(x,y,1)
+                                drawLine(lastPoint.x,lastPoint.y,newPoint.x,newPoint.y)
+                                lastPoint=newPoint 
+                            }
+                        }
+                        
+                    canvas.onmouseup=function(a){
+                            using=false
+                        }
+                    }
+            }
+      
+    </script>
+</body>
+</html>
